@@ -635,7 +635,7 @@ GameObject:
   - component: {fileID: 239656073}
   - component: {fileID: 239656072}
   m_Layer: 0
-  m_Name: colorInversion
+  m_Name: colorState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -655,6 +655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::colorInversion
   color: 4
   colorRenderer: {fileID: 0}
+  colorShift: 1
 --- !u!4 &239656073
 Transform:
   m_ObjectHideFlags: 0
