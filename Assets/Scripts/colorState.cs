@@ -53,14 +53,30 @@ public class colorState : MonoBehaviour
             if (isBlue)
             {
                 //blue transparent stuff
-                colorRenderer.material.SetColor("_BaseColor", new Color(0f, 0f, 1f, 0.25f));
-                colorRenderer.material.SetColor("_EmissionColor", new Color(0f, 0f, 1f, 0.25f));
+
+                Material[]mats = colorRenderer.materials;
+
+                mats[0].SetColor("_BaseColor", new Color(0f, 0f, 1f, 0.25f));
+                mats[1].SetColor("_BaseColor", new Color(0f, 0f, 1f, 0.25f));
+                mats[0].SetColor("_EmissionColor", new Color(0f, 0f, 1f, 0.25f));
+                mats[1].SetColor("_EmissionColor", new Color(0f, 0f, 1f, 0.25f));
+
+                colorRenderer.materials = mats;
+                
                 enableCollision = false;
             } else
             {
                 //red solid stuff
-                colorRenderer.material.SetColor("_BaseColor", Color.red);
-                colorRenderer.material.SetColor("_EmissionColor", Color.red);
+
+                Material[] mats = colorRenderer.materials;
+
+                mats[0].SetColor("_BaseColor", Color.red);
+                mats[1].SetColor("_BaseColor", Color.red);
+                mats[0].SetColor("_EmissionColor", Color.red);
+                mats[1].SetColor("_EmissionColor", Color.red);
+
+                colorRenderer.materials = mats;
+
                 enableCollision = true;
             }
         }
@@ -69,14 +85,30 @@ public class colorState : MonoBehaviour
             if(isBlue)
             {
                 //blue solid stuff
-                colorRenderer.material.SetColor("_BaseColor", Color.blue);
-                colorRenderer.material.SetColor("_EmissionColor", Color.blue);
+
+                Material[] mats = colorRenderer.materials;
+
+                mats[0].SetColor("_BaseColor", Color.blue);
+                mats[1].SetColor("_BaseColor", Color.blue);
+                mats[0].SetColor("_EmissionColor", Color.blue);
+                mats[1].SetColor("_EmissionColor", Color.blue);
+
+                colorRenderer.materials = mats;
+
                 enableCollision = true;
             } else
             {
                 //red transparent stuff
-                colorRenderer.material.SetColor("_BaseColor", new Color(1f, 0f, 0f, 0.25f));
-                colorRenderer.material.SetColor("_EmissionColor", new Color(1f, 0f, 0f, 0.25f));
+
+                Material[] mats = colorRenderer.materials;
+
+                mats[0].SetColor("_BaseColor", new Color(1f, 0f, 0f, 0.25f));
+                mats[1].SetColor("_BaseColor", new Color(1f, 0f, 0f, 0.25f));
+                mats[0].SetColor("_EmissionColor", new Color(1f, 0f, 0f, 0.25f));
+                mats[1].SetColor("_EmissionColor", new Color(1f, 0f, 0f, 0.25f));
+
+                colorRenderer.materials = mats;
+
                 enableCollision = false;
             }
         }
