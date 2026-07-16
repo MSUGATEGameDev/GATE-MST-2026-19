@@ -95,7 +95,7 @@ public class Entity : MonoBehaviour
     {
         dirInfluence = influence;
     }
-
+    [HideInInspector]public float affectedRotation = 1;
     private void HandleMove()
     {
         if (curState != EStates.dead && curState != EStates.disabled) {
@@ -104,9 +104,8 @@ public class Entity : MonoBehaviour
             if (normalDir.magnitude >= 0.1f)
             {
                 float targetAngle = Mathf.Atan2(normalDir.x, normalDir.z) * Mathf.Rad2Deg + dirInfluence;
-                float angle = Mathf.SmoothDampAngle(transform.localEulerAngles.y, targetAngle, ref turnVel, turnTime);
+                float angle = Mathf.SmoothDampAngle(transform.localEulerAngles.y, targetAngle, ref turnVel, turnTime/affectedRotation);
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
                 Vector3 vel = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
                 HandlePush(vel, targetAngle);
@@ -165,14 +164,21 @@ public class Entity : MonoBehaviour
 
     public void setEntityLights(Color color)
     {
-        foreach (GameObject light in entityLights)
+        try
         {
-            Renderer lightRenderer = light.GetComponent<Renderer>();
-            lightRenderer.material.SetColor("_BaseColor", color);
-            lightRenderer.material.SetColor("_EmissionColor", color);
+            foreach (GameObject light in entityLights)
+            {
+                Renderer lightRenderer = light.GetComponent<Renderer>();
+                lightRenderer.material.SetColor("_BaseColor", color);
+                lightRenderer.material.SetColor("_EmissionColor", color);
+            }
+        }
+        catch
+        {
+            print("No entity lights set!");
         }
     }
-
+    public Transform pushPoint;
     private void HandlePush(Vector3 fVector, float tAngle)
     {
         if (curPushable == null && pushing)
@@ -190,13 +196,22 @@ public class Entity : MonoBehaviour
         }
         else if (pushing)
         {
-            Vector3 newPos = transform.position + fVector;
+            Vector3 newPos = pushPoint.position;
             newPos.y = curPushable.transform.position.y;
-            curPushable.transform.rotation = Quaternion.Euler(0f, tAngle, 0f);
+            curPushable.transform.rotation = pushPoint.rotation;
             curPushable.transform.position = newPos;
+            curPushable.layer = 11;
+            GetComponent<BoxCollider>().enabled = true;
+            affectedRotation = .1f;
         }
         else
         {
+            if(curPushable != null)
+            {
+                curPushable.layer = 7;
+                GetComponent<BoxCollider>().enabled = false;
+                affectedRotation = 1f;
+            }
             curPushable = null;
         }
     }
@@ -240,13 +255,20 @@ public class Entity : MonoBehaviour
 
     public void Damaged()
     {
-        nextdamageLightTime = Time.time + 0.5f;
-        damageLightActive = true;
-        foreach (GameObject light in entityDamageLights)
+        try
         {
-            Renderer lightRenderer = light.GetComponent<Renderer>();
-            lightRenderer.material.EnableKeyword("_EMISSION");
-            lightRenderer.material.SetColor("_EmissionColor", Color.red * 2);
+            nextdamageLightTime = Time.time + 0.5f;
+            damageLightActive = true;
+            foreach (GameObject light in entityDamageLights)
+            {
+                Renderer lightRenderer = light.GetComponent<Renderer>();
+                lightRenderer.material.EnableKeyword("_EMISSION");
+                lightRenderer.material.SetColor("_EmissionColor", Color.red * 2);
+            }
+        }
+        catch
+        {
+            print("No Damage lights set!");
         }
     }
 
@@ -254,6 +276,8 @@ public class Entity : MonoBehaviour
     {
         curState = EStates.dead;
         anim.enabled = false;
+        rigid.linearVelocity = Vector3.zero;
+        curDir = Vector2.zero;
     }
 
     public virtual void DetermineState()
